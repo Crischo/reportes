@@ -1,0 +1,108 @@
+<html>
+
+<head>
+  <link rel="stylesheet" href="../kendo/css/kendo.common-bootstrap.min.css" />
+  <link rel="stylesheet" href="../kendo/css/kendo.bootstrap.min.css" />
+  <link rel="stylesheet" href="../kendo/css/kendo.bootstrap.mobile.min.css" />
+</head>
+
+<body>
+
+  <div id="tablahallmark_forms"></div>
+
+  
+  <script src="../kendo/js/jquery-3.1.1.min.js"></script>
+  <script src="../kendo/js/kendo.all.min.js"></script>
+  <script src="../kendo/js/jszip.min.js"></script>
+  <script src="../kendo/js/kendo.messages.es-MX.min.js"></script>
+  <script src="../kendo/js/kendo.culture.es-MX.min.js"></script>
+  <script src="../kendo/js/w3.js"></script>
+  <script src="../kendo/js/printArea.js"></script>
+
+  <script>
+
+    //escondo de inicio el formulario para imprecion
+    $('#Reporte').hide();
+    //para el formato de hora en fechas
+    kendo.culture("es-MX");
+
+   
+
+// kendo
+    dataSource = new kendo.data.DataSource({
+      transport: {
+        read: { url: "/hallmark_forms", type: 'GET', dataType: "json" },
+        parameterMap: function (options, operation) {
+          if (operation !== "read" && options.models) {
+            var datos = options.models[0]
+            return datos;
+          }
+        }
+      },
+      batch: true,
+      pageSize: 100,
+      serverFiltering: false,
+
+      requestEnd: function (e) {
+        if (e.type != "read") {
+          // refresh the grid
+          e.sender.read();
+        }
+      },
+      schema: {
+        model: {
+          id: "id",
+          fields: {
+            id: { editable: false },
+            denomination: { editable: false },
+            expedient: { editable: false },
+            niza_class: { editable: false }
+
+          }
+        }
+      }
+    });
+
+
+    $("#tablahallmark_forms").kendoGrid({
+      dataSource: dataSource,
+      height: 475,
+      filterable: true,
+      toolbar: ['excel','pdf'],
+      excel: {
+        allPages: true,
+        fileName: "hallmark_formss.xlsx"
+      },
+       pdf: {
+       fileName: "Kendo UI Grid Export.pdf",
+       allPages: true
+            },
+      resizable: true,
+      pageable: { refresh: true, pageSizes: true, },
+      sortable: true,
+      columns: [
+      //AL SER ID DE LA TABLA codigo_solicitud_signo lo oculto
+        { field: "id", title: "ID", filterable: { search: true, multi: true } },
+        { field: "denomination", title: "denomination", filterable: { search: true, multi: true } },
+        { field: "expedient", title: "expedient", filterable: { search: true, multi: true } },
+        { field: "niza_class", title: "niza_class", filterable: { search: true, multi: true } }
+      ],
+      dataBound: function (e) {
+        if (this.dataSource.group().length > 0) {
+          for (var i = 0; i < $(".k-grouping-row").length; i++) {
+            this.collapseGroup($(".k-grouping-row")[i]);
+          }
+        }
+      },
+      editable: "popup"
+    });
+
+
+
+
+  </script>
+</body>
+
+
+
+</html>

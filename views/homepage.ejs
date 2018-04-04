@@ -1,0 +1,134 @@
+<html>
+
+<head>
+  <link rel="stylesheet" href="../kendo/css/kendo.common-bootstrap.min.css" />
+  <link rel="stylesheet" href="../kendo/css/kendo.bootstrap.min.css" />
+  <link rel="stylesheet" href="../kendo/css/kendo.bootstrap.mobile.min.css" />
+</head>
+
+<body>
+
+  <div id="tablaPpdi_ciudad"></div>
+
+  
+  <script src="../kendo/js/jquery-3.1.1.min.js"></script>
+  <script src="../kendo/js/kendo.all.min.js"></script>
+  <script src="../kendo/js/jszip.min.js"></script>
+  <script src="../kendo/js/kendo.messages.es-MX.min.js"></script>
+  <script src="../kendo/js/kendo.culture.es-MX.min.js"></script>
+  <script src="../kendo/js/w3.js"></script>
+  <script src="../kendo/js/printArea.js"></script>
+
+  <script>
+    var aux = true;
+
+    //escondo de inicio el formulario para imprecion
+    $('#Reporte').hide();
+    //para el formato de hora en fechas
+    kendo.culture("es-MX");
+
+   
+
+// kendo
+/**
+   dataSource: new kendo.data.DataSource({
+        transport: {
+            read: function(options){
+                data.db.transaction(function(tx) {
+                    tx.executeSql("SELECT DEP_ID, DEP_Name FROM Department", [], 
+                        function (tx, rs) {
+                            options.success(data.toArray(rs));
+                        }, 
+                        data.onError);
+                });
+            }
+        }
+    });
+
+
+*/
+
+
+
+    dataSource = new kendo.data.DataSource({
+ 
+      transport: {
+
+        read: { url: "/Ppdi_ciudad", type: 'GET', dataType: "json" },
+        parameterMap: function (options, operation) {
+          if (operation !== "read" && options.models) {
+            var datos = options.models[0];
+
+            return datos;
+          }
+        }
+      
+      },
+     // queria que funcione                                 data: createRandomData(10),
+      batch: true,
+      pageSize: 30,
+      serverFiltering: false,
+
+
+
+      requestEnd: function (e) {
+        if (e.type != "read") {
+          // refresh the grid
+          e.sender.read();
+        }
+      },
+      schema: {
+        model: {
+          id: "codigo_ciudad",
+          fields: {
+            codigo_ciudad: { editable: false },
+            codigo_provincia: { editable: false },
+            nombre_ciudad: { editable: false }
+
+          }
+        }
+      }
+    });
+
+
+    $("#tablaPpdi_ciudad").kendoGrid({
+      dataSource: dataSource,
+      height: 475,
+      filterable: true,
+      toolbar: ['excel','pdf'],
+      excel: {
+        allPages: true,
+        fileName: "Ppdi_ciudads.xlsx"
+      },
+       pdf: {
+       fileName: "Kendo UI Grid Export.pdf",
+       allPages: true
+            },
+      resizable: true,
+      pageable: { refresh: true, pageSizes: true, },
+      sortable: false,
+      columns: [
+      //AL SER ID DE LA TABLA codigo_solicitud_signo lo oculto
+        { field: "codigo_ciudad", title: "CODIGO_CIUDAD", filterable: { search: true, multi: true } },
+        { field: "codigo_provincia", title: "CODIGO_PROVINCIA", filterable: { search: true, multi: true } },
+        { field: "nombre_ciudad", title: "NOMBRE_CIUDAD", filterable: { search: true, multi: true } }
+      ],
+      dataBound: function (e) {
+        if (this.dataSource.group().length > 0) {
+          for (var i = 0; i < $(".k-grouping-row").length; i++) {
+            this.collapseGroup($(".k-grouping-row")[i]);
+          }
+        }
+      },
+      editable: "popup"
+    });
+
+
+
+
+  </script>
+</body>
+
+
+
+</html>

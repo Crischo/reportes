@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Ingreso</title>
+  <style type="text/css" rel="stylesheet">
+    html,body{width:100%;height:100%;margin:0;padding:0;font-family:"lucida grande", "lucida sans unicode", lucida, helvetica, "Hiragino Sans GB", "Microsoft YaHei", "WenQuanYi Micro Hei", sans-serif;}
+    .header{height:40px;width:100%;background-color:#242424;position:fixed;}
+    .header_title{line-height:40px;margin-left:60px;color:#fff;font-size:15px;}
+    .header_user{font-size:12px;margin-left:20px;color:#ccc;}
+    .panel{width:380px;height:500px;margin-left:auto;margin-right:auto;padding-top:100px;font-size:14px;}
+    a{text-decoration: none;color:#fff;}
+    .login_input>span{display: inline-block;width:50px;}
+
+
+    input{height:28px;line-height:28px;width:300px;border:1px solid #ddd; border-radius:4px;margin-left:15px;margin-bottom:10px;outline: none;padding-left:10px;}
+  </style>
+</head>
+<body>
+
+
+
+<div class="panel">
+  <div class="login_input">
+    <img src="https://www.paiecuador.ec/wp-content/uploads/2017/11/Logo-IEPI-300x254.png" align="center">
+  <br>
+    <span>Usuario</span>
+    <input id="username" placeholder="Ingrese el usuario"/>
+  </div>
+  <div class="login_input">
+    <span>Contraseña</span>
+    <input id="password" type="password" placeholder="Ingrese su contraseña">
+  </div>
+  <div id="btn" onclick="entrar()" style="background-color:#3C74F2;width:240px;height:32px;line-height:32px;text-align: center;color:#fff;border-radius:4px;margin-top:30px;margin-left:60px;"/>
+    ingresar
+  </div>
+</div>
+<script type="text/javascript" src="/js/jquery.min.js"></script>
+
+
+<script type="text/javascript">
+function entrar(){
+   var usu=document.getElementById("username").value;
+   var contra=document.getElementById("password").value;
+if(usu=="12345"&&contra=="12345"){
+ // window.open("areas", "Diseño Web", "width=1200, height=800");
+location.href = "/areas";
+ 
+}else {
+ alert("Usuario o Contraseña incorrectos!");
+}
+
+} 
+
+
+</script>
+</body>
+</html>

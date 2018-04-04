@@ -1,0 +1,108 @@
+<html>
+
+<head>
+  <link rel="stylesheet" href="../kendo/css/kendo.common-bootstrap.min.css" />
+  <link rel="stylesheet" href="../kendo/css/kendo.bootstrap.min.css" />
+  <link rel="stylesheet" href="../kendo/css/kendo.bootstrap.mobile.min.css" />
+</head>
+
+<body>
+
+  <div id="tablaPpdi_persona"></div>
+
+  
+  <script src="../kendo/js/jquery-3.1.1.min.js"></script>
+  <script src="../kendo/js/kendo.all.min.js"></script>
+  <script src="../kendo/js/jszip.min.js"></script>
+  <script src="../kendo/js/kendo.messages.es-MX.min.js"></script>
+  <script src="../kendo/js/kendo.culture.es-MX.min.js"></script>
+  <script src="../kendo/js/w3.js"></script>
+  <script src="../kendo/js/printArea.js"></script>
+
+  <script>
+
+    //escondo de inicio el formulario para imprecion
+    
+    //para el formato de hora en fechas
+    kendo.culture("es-MX");
+
+   
+
+// kendo
+    dataSource = new kendo.data.DataSource({
+      transport: {
+        read: { url: "/Ppdi_persona", type: 'GET', dataType: "json" },
+        parameterMap: function (options, operation) {
+          if (operation !== "read" && options.models) {
+            var datos = options.models[0]
+            return datos;
+          }
+        }
+      },
+      batch: true,
+      pageSize: 100,
+      serverFiltering: false,
+
+      requestEnd: function (e) {
+        if (e.type != "read") {
+          // refresh the grid
+          e.sender.read();
+        }
+      },
+      schema: {
+        model: {
+          id: "codigo_persona",
+          fields: {
+            codigo_persona: { editable: false },
+            numero_identificacion: { editable: false },
+            nombre_persona: { editable: false },
+            casillero_judicial: { editable: false }
+
+          }
+        }
+      }
+    });
+
+
+    $("#tablaPpdi_persona").kendoGrid({
+      dataSource: dataSource,
+      height: 475,
+      filterable: true,
+      toolbar: ['excel','pdf'],
+      excel: {
+        allPages: true,
+        fileName: "Ppdi_personas.xlsx"
+      },
+       pdf: {
+       fileName: "Ppdi_personas.pdf",
+       allPages: true
+            },
+      resizable: true,
+      pageable: { refresh: true, pageSizes: true, },
+      sortable: true,
+      columns: [
+      //AL SER ID DE LA TABLA codigo_solicitud_signo lo oculto
+        { field: "codigo_persona", title: "codigo_persona", filterable: { search: true, multi: true } },
+        { field: "numero_identificacion", title: "numero_identificacion", filterable: { search: true, multi: true } },
+        { field: "nombre_persona", title: "nombre_persona", filterable: { search: true, multi: true } },
+        { field: "casillero_judicial", title: "casillero_judicial", filterable: { search: true, multi: true } }
+      ],
+      dataBound: function (e) {
+        if (this.dataSource.group().length > 0) {
+          for (var i = 0; i < $(".k-grouping-row").length; i++) {
+            this.collapseGroup($(".k-grouping-row")[i]);
+          }
+        }
+      },
+      editable: "popup"
+    });
+
+
+
+
+  </script>
+</body>
+
+
+
+</html>
